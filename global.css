@@ -1,5 +1,189 @@
 @import "tailwindcss/theme.css" layer(theme);
+@import "nativewind/theme";
+@import "./src/theme/headly.css";
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css";
- 
-@import "nativewind/theme";
+
+@source "./src/**/*.{ts,tsx}";
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+}
+
+@layer utilities {
+  .headly-screen {
+    flex: 1;
+    background-color: var(--color-headly-background);
+  }
+
+  .headly-surface {
+    background-color: var(--color-headly-surface);
+  }
+
+  .headly-card {
+    background-color: var(--color-headly-background);
+    border-color: var(--color-headly-border);
+    border-radius: var(--radius-headly-md);
+    border-width: 1px;
+    box-shadow: var(--shadow-headly-sm);
+  }
+
+  .headly-card--elevated {
+    box-shadow: var(--shadow-headly-md);
+  }
+
+  .headly-text-h1 {
+    color: var(--color-headly-text-primary);
+    font-family: var(--font-headly-semibold);
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 38.4px;
+  }
+
+  .headly-text-h2 {
+    color: var(--color-headly-text-primary);
+    font-family: var(--font-headly-semibold);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 31.2px;
+  }
+
+  .headly-text-h3 {
+    color: var(--color-headly-text-primary);
+    font-family: var(--font-headly-semibold);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 26px;
+  }
+
+  .headly-text-h4 {
+    color: var(--color-headly-text-primary);
+    font-family: var(--font-headly-medium);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22.4px;
+  }
+
+  .headly-text-body-large {
+    color: var(--color-headly-text-secondary);
+    font-family: var(--font-headly);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 25.6px;
+  }
+
+  .headly-text-body-medium {
+    color: var(--color-headly-text-secondary);
+    font-family: var(--font-headly);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22.4px;
+  }
+
+  .headly-text-body-small {
+    color: var(--color-headly-text-tertiary);
+    font-family: var(--font-headly);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20.8px;
+  }
+
+  .headly-text-caption {
+    color: var(--color-headly-text-tertiary);
+    font-family: var(--font-headly);
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 15.4px;
+  }
+
+  .headly-text-overline {
+    color: var(--color-headly-teal);
+    font-family: var(--font-headly-medium);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0px;
+    line-height: 14px;
+    text-transform: uppercase;
+  }
+
+  .headly-button {
+    align-items: center;
+    border-radius: var(--radius-headly-xl);
+    flex-direction: row;
+    justify-content: center;
+    min-height: 36px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .headly-button--primary {
+    background-color: var(--color-headly-teal);
+  }
+
+  .headly-button--outline {
+    background-color: var(--color-headly-background);
+    border-color: var(--color-headly-teal);
+    border-width: 2px;
+  }
+
+  .headly-button--text {
+    background-color: transparent;
+    min-height: 32px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .headly-button__label {
+    font-family: var(--font-headly-medium);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+  }
+
+  .headly-button__label--primary {
+    color: var(--color-headly-background);
+  }
+
+  .headly-button__label--accent {
+    color: var(--color-headly-teal);
+  }
+
+  .headly-radius--sm {
+    border-radius: var(--radius-headly-sm);
+  }
+
+  .headly-radius--md {
+    border-radius: var(--radius-headly-md);
+  }
+
+  .headly-radius--lg {
+    border-radius: var(--radius-headly-lg);
+  }
+
+  .headly-radius--xl {
+    border-radius: var(--radius-headly-xl);
+  }
+
+  .headly-shadow--sm {
+    box-shadow: var(--shadow-headly-sm);
+  }
+
+  .headly-shadow--md {
+    box-shadow: var(--shadow-headly-md);
+  }
+
+  .headly-shadow--lg {
+    box-shadow: var(--shadow-headly-lg);
+  }
+
+  .headly-note {
+    align-items: center;
+    background-color: var(--color-headly-teal-very-light);
+    border-radius: var(--radius-headly-sm);
+    flex-direction: row;
+    gap: 12px;
+    padding: 16px;
+  }
+}

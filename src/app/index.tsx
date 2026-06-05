@@ -1,9 +1,12 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 
 export default function Index() {
   return (
-    <View className="flex-1 items-center justify-center">
-      <Text className="text-xl text-indigo-600 text-center mt-90 font-bold">HEADLY</Text>
+    <View className="headly-screen items-center justify-center px-6">
+      <Text className="headly-text-h1 text-headly-teal">Headly</Text>
+      <Text className="headly-text-body-large mt-3 text-center">
+        Understand your headaches.{"\n"}Take control.
+      </Text>
     </View>
   );
 }

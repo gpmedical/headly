@@ -1,0 +1,35 @@
+@layer theme {
+  @theme {
+    --font-sans: "Poppins-Regular";
+    --font-headly: "Poppins-Regular";
+    --font-headly-medium: "Poppins-Medium";
+    --font-headly-semibold: "Poppins-SemiBold";
+
+    --color-headly-teal: #0ea5a4;
+    --color-headly-teal-light: #5ecac6;
+    --color-headly-teal-very-light: #e6f6f5;
+    --color-headly-mauve: #b38eff;
+    --color-headly-lavender: #ede7ff;
+
+    --color-headly-success: #22c55e;
+    --color-headly-warning: #f59e0b;
+    --color-headly-info: #f97316;
+    --color-headly-error: #ef4444;
+
+    --color-headly-text-primary: #0f172a;
+    --color-headly-text-secondary: #475569;
+    --color-headly-text-tertiary: #64748b;
+    --color-headly-border: #e2e8f0;
+    --color-headly-surface: #f8fafc;
+    --color-headly-background: #ffffff;
+
+    --radius-headly-sm: 8px;
+    --radius-headly-md: 12px;
+    --radius-headly-lg: 16px;
+    --radius-headly-xl: 24px;
+
+    --shadow-headly-sm: 0px 2px 8px rgba(15, 23, 42, 0.06);
+    --shadow-headly-md: 0px 6px 20px rgba(15, 23, 42, 0.08);
+    --shadow-headly-lg: 0px 12px 30px rgba(15, 23, 42, 0.12);
+  }
+}
