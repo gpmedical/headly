@@ -1,9 +1,9 @@
 import { Image, type ImageProps } from "expo-image";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
-  PanResponder,
+  type GestureResponderEvent,
   Pressable,
   Text,
   useWindowDimensions,
@@ -79,6 +79,10 @@ const onboardingPages: OnboardingPage[] = [
 
 export default function OnboardingScreen() {
   const [pageIndex, setPageIndex] = useState(0);
+  const swipeStart = useRef<{ x: number; y: number; pageIndex: number } | null>(
+    null,
+  );
+  const lastSwipeAt = useRef(0);
   const { width, height } = useWindowDimensions();
   const isLastPage = pageIndex === onboardingPages.length - 1;
   const currentPage = onboardingPages[pageIndex];
@@ -102,24 +106,41 @@ export default function OnboardingScreen() {
     setPageIndex((currentIndex) => Math.max(currentIndex - 1, 0));
   }, []);
 
-  const swipeResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_event, gestureState) =>
-          Math.abs(gestureState.dx) > 16 &&
-          Math.abs(gestureState.dx) > Math.abs(gestureState.dy) * 1.5,
-        onPanResponderRelease: (_event, gestureState) => {
-          if (gestureState.dx <= -50) {
-            goToNextPage();
-          }
+  const handleSwipeStart = (event: GestureResponderEvent) => {
+    const { pageX, pageY } = event.nativeEvent;
+    swipeStart.current = { x: pageX, y: pageY, pageIndex };
+  };
 
-          if (gestureState.dx >= 50) {
-            goToPreviousPage();
-          }
-        },
-      }),
-    [goToNextPage, goToPreviousPage],
-  );
+  const handleSwipeEnd = (event: GestureResponderEvent) => {
+    const swipe = swipeStart.current;
+
+    if (!swipe) {
+      return;
+    }
+
+    const { pageX, pageY } = event.nativeEvent;
+    const deltaX = pageX - swipe.x;
+    const deltaY = pageY - swipe.y;
+    swipeStart.current = null;
+
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY) * 1.5) {
+      return;
+    }
+
+    const now = Date.now();
+    if (now - lastSwipeAt.current < 400) {
+      return;
+    }
+
+    lastSwipeAt.current = now;
+
+    if (deltaX < 0) {
+      setPageIndex(Math.min(swipe.pageIndex + 1, onboardingPages.length - 1));
+      return;
+    }
+
+    setPageIndex(Math.max(swipe.pageIndex - 1, 0));
+  };
 
   const handleNextPress = () => {
     if (isLastPage) {
@@ -149,7 +170,15 @@ export default function OnboardingScreen() {
         ) : null}
       </View>
 
-      <View className="flex-1 px-7" {...swipeResponder.panHandlers}>
+      <View
+        className="flex-1 px-7"
+        onStartShouldSetResponder={() => true}
+        onResponderGrant={handleSwipeStart}
+        onResponderRelease={handleSwipeEnd}
+        onResponderTerminate={() => {
+          swipeStart.current = null;
+        }}
+      >
         <View
           style={{ height: imageFrameHeight }}
           className="items-center justify-center"
