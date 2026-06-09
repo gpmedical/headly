@@ -1,10 +1,18 @@
+import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { Pressable, Text, View } from "react-native";
+
+import { images } from "@/constants/images";
 
 export default function Index() {
   return (
     <View className="headly-screen items-center justify-center px-6">
-      <Text className="headly-text-h1 text-headly-teal">Headly</Text>
+      <Image
+        source={images.logo}
+        contentFit="contain"
+        accessibilityLabel="Headly"
+        style={{ height: 39, width: 118 }}
+      />
       <Text className="headly-text-body-large mt-3 text-center">
         Understand your headaches.{"\n"}Take control.
       </Text>
@@ -21,4 +29,3 @@ export default function Index() {
     </View>
   );
 }
-

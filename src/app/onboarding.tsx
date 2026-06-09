@@ -28,7 +28,7 @@ const onboardingPages: OnboardingPage[] = [
   {
     id: "intro",
     image: images.onboarding,
-    title: "Welcome to ",
+    title: "Welcome to",
     accentTitle: "Headly",
     description: "Understand your headaches.\nTake control of your well-being.",
     imageRatio: 565 / 765,
@@ -42,8 +42,8 @@ const onboardingPages: OnboardingPage[] = [
     description:
       "Log headache episodes, symptoms,\ntriggers, and medications in just\na few taps.",
     imageRatio: 215 / 190,
-    imageWidthRatio: 0.48,
-    maxImageWidth: 196,
+    imageWidthRatio: 0.62,
+    maxImageWidth: 226,
   },
   {
     id: "insights",
@@ -52,8 +52,8 @@ const onboardingPages: OnboardingPage[] = [
     description:
       "Explore statistics and trends to\nidentify what might be triggering\nyour headaches.",
     imageRatio: 205 / 190,
-    imageWidthRatio: 0.48,
-    maxImageWidth: 196,
+    imageWidthRatio: 0.6,
+    maxImageWidth: 220,
   },
   {
     id: "reminders",
@@ -62,8 +62,8 @@ const onboardingPages: OnboardingPage[] = [
     description:
       "Set medication reminders and\nnever miss an important dose\nagain.",
     imageRatio: 205 / 190,
-    imageWidthRatio: 0.48,
-    maxImageWidth: 196,
+    imageWidthRatio: 0.61,
+    maxImageWidth: 224,
   },
   {
     id: "export",
@@ -72,8 +72,8 @@ const onboardingPages: OnboardingPage[] = [
     description:
       "Export a detailed PDF report\nto print or share with your\ndoctor anytime.",
     imageRatio: 210 / 185,
-    imageWidthRatio: 0.47,
-    maxImageWidth: 190,
+    imageWidthRatio: 0.6,
+    maxImageWidth: 220,
   },
 ];
 
@@ -86,7 +86,7 @@ export default function OnboardingScreen() {
   const { width, height } = useWindowDimensions();
   const isLastPage = pageIndex === onboardingPages.length - 1;
   const currentPage = onboardingPages[pageIndex];
-  const imageFrameHeight = Math.min(Math.max(height * 0.38, 270), 330);
+  const imageFrameHeight = Math.min(Math.max(height * 0.37, 266), 320);
   const imageWidth = Math.min(
     width * currentPage.imageWidthRatio,
     currentPage.maxImageWidth,
@@ -194,28 +194,42 @@ export default function OnboardingScreen() {
         </View>
 
         <View className="items-center">
-          <Text className="headly-text-h3 text-center">
-            {currentPage.title}
-            {currentPage.accentTitle ? (
-              <Text className="headly-text-h3 text-headly-teal">
-                {currentPage.accentTitle}
+          {currentPage.accentTitle ? (
+            <View className="flex-row items-center justify-center">
+              <Text className="headly-text-h3 text-center">
+                {currentPage.title}
               </Text>
-            ) : null}
-          </Text>
-          <Text className="headly-text-body-small mt-4 text-center text-headly-text-primary">
+              <Image
+                source={images.logo}
+                contentFit="contain"
+                accessibilityLabel={currentPage.accentTitle}
+                style={{
+                  height: 24,
+                  marginLeft: 2,
+                  transform: [{ translateY: 1 }],
+                  width: 73,
+                }}
+              />
+            </View>
+          ) : (
+            <Text className="headly-text-h3 text-center">
+              {currentPage.title}
+            </Text>
+          )}
+          <Text className="mt-[13px] text-center font-headly text-[12px] leading-[19px] text-headly-text-primary">
             {currentPage.description}
           </Text>
         </View>
       </View>
 
-      <View className="gap-8 px-7 pb-9">
-        <View className="h-3 flex-row items-center justify-center gap-3">
+      <View className="gap-[30px] px-7 pb-9">
+        <View className="h-[10px] flex-row items-center justify-center gap-[11px]">
           {onboardingPages.map((page, index) => (
             <View
               key={page.id}
               className={
                 index === pageIndex
-                  ? "h-3 w-3 rounded-full bg-headly-teal"
+                  ? "h-[10px] w-[10px] rounded-full bg-headly-teal"
                   : "h-2 w-2 rounded-full bg-[#DADDE8]"
               }
             />

@@ -1,4 +1,5 @@
 export const images = {
+  logo: require("../../assets/images/logo.png"),
   onboarding: require("../../assets/images/onboarding.png"),
   onboardingTrack: require("../../assets/images/onboarding-track.png"),
   onboardingInsights: require("../../assets/images/onboarding-insights.png"),
