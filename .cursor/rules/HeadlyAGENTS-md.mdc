@@ -34,7 +34,7 @@ Use the following stack:
 * React Native
 * TypeScript
 * Expo Router
-* NativeWind
+* NativeWind v5
 * Zustand
 * AsyncStorage
 * Clerk for authentication
