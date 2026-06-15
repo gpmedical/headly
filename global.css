@@ -185,3 +185,41 @@
   gap: 12px;
   padding: 16px;
 }
+
+@utility headly-auth__input {
+  align-items: center;
+  background-color: #ffffff;
+  border-color: #e4e7ef;
+  border-radius: 15px;
+  border-width: 1px;
+  box-shadow: 0px 5px 14px rgba(15, 23, 42, 0.05);
+  flex-direction: row;
+  gap: 13px;
+  height: 49px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+@utility headly-auth__primary {
+  align-items: center;
+  background-color: #14a4a1;
+  border-radius: 14px;
+  box-shadow: 0px 8px 16px rgba(14, 165, 164, 0.18);
+  flex-direction: row;
+  height: 50px;
+  justify-content: center;
+  max-width: 318px;
+  width: 100%;
+}
+
+@utility headly-auth__social {
+  align-items: center;
+  background-color: #ffffff;
+  border-color: #e4e7ef;
+  border-radius: 14px;
+  border-width: 1px;
+  box-shadow: 0px 4px 12px rgba(15, 23, 42, 0.04);
+  flex-direction: row;
+  height: 44px;
+  justify-content: center;
+}
