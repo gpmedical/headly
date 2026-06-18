@@ -1,5 +1,6 @@
+import { useAuth } from "@clerk/expo";
 import { Image, type ImageProps } from "expo-image";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useRef, useState } from "react";
 import {
@@ -78,6 +79,7 @@ const onboardingPages: OnboardingPage[] = [
 ];
 
 export default function OnboardingScreen() {
+  const { isLoaded, isSignedIn } = useAuth();
   const [pageIndex, setPageIndex] = useState(0);
   const swipeStart = useRef<{ x: number; y: number; pageIndex: number } | null>(
     null,
@@ -150,6 +152,14 @@ export default function OnboardingScreen() {
 
     goToNextPage();
   };
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (!isSignedIn) {
+    return <Redirect href="/sign-in" />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>

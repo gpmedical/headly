@@ -1,6 +1,7 @@
+import { useAuth } from "@clerk/expo";
 import { Image } from "expo-image";
 import type { Href } from "expo-router";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,6 +10,15 @@ import { colors } from "@/theme";
 
 export default function Index() {
   const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (!isSignedIn) {
+    return <Redirect href="/sign-in" />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.neutral.background }}>
@@ -42,7 +52,7 @@ export default function Index() {
             accessibilityRole="button"
             activeOpacity={0.88}
             className="headly-auth__primary mt-10"
-            onPress={() => router.push("/sign-up" as Href)}
+            onPress={() => router.push("/onboarding" as Href)}
           >
             <Text className="font-headly-semibold text-[15px] leading-5 text-white">
               Get Started
