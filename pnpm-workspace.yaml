@@ -1,5 +1,9 @@
 allowBuilds:
+  browser-tabs-lock: set this to true or false
+  bufferutil: set this to true or false
+  core-js: set this to true or false
   msgpackr-extract: true
+  utf-8-validate: set this to true or false
 
 overrides:
   lightningcss: 1.30.1
