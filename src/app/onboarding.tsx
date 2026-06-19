@@ -1,9 +1,10 @@
-import { useAuth } from "@clerk/expo";
+import { useAuth, useUser } from "@clerk/expo";
 import { Image, type ImageProps } from "expo-image";
 import { Redirect, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   type GestureResponderEvent,
   Pressable,
   Text,
@@ -13,6 +14,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { images } from "@/constants/images";
+import {
+  hasCompletedOnboarding,
+  ONBOARDING_COMPLETED_AT_KEY,
+  ONBOARDING_COMPLETED_KEY,
+} from "@/lib/onboarding";
 
 type OnboardingPage = {
   id: string;
@@ -80,7 +86,10 @@ const onboardingPages: OnboardingPage[] = [
 
 export default function OnboardingScreen() {
   const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded: isUserLoaded, user } = useUser();
   const [pageIndex, setPageIndex] = useState(0);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [completionError, setCompletionError] = useState<string | null>(null);
   const swipeStart = useRef<{ x: number; y: number; pageIndex: number } | null>(
     null,
   );
@@ -94,8 +103,27 @@ export default function OnboardingScreen() {
     currentPage.maxImageWidth,
   );
 
-  const finishOnboarding = () => {
-    router.replace("/");
+  const finishOnboarding = async () => {
+    if (!user || isCompleting) {
+      return;
+    }
+
+    setCompletionError(null);
+    setIsCompleting(true);
+
+    try {
+      await user.updateMetadata({
+        unsafeMetadata: {
+          [ONBOARDING_COMPLETED_KEY]: true,
+          [ONBOARDING_COMPLETED_AT_KEY]: new Date().toISOString(),
+        },
+      });
+      router.replace("/");
+    } catch {
+      setCompletionError("We couldn't save your onboarding status. Please try again.");
+    } finally {
+      setIsCompleting(false);
+    }
   };
 
   const goToNextPage = useCallback(() => {
@@ -146,7 +174,7 @@ export default function OnboardingScreen() {
 
   const handleNextPress = () => {
     if (isLastPage) {
-      finishOnboarding();
+      void finishOnboarding();
       return;
     }
 
@@ -161,6 +189,14 @@ export default function OnboardingScreen() {
     return <Redirect href="/sign-in" />;
   }
 
+  if (!isUserLoaded || !user) {
+    return null;
+  }
+
+  if (hasCompletedOnboarding(user.unsafeMetadata)) {
+    return <Redirect href="/" />;
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <StatusBar style="dark" />
@@ -171,7 +207,11 @@ export default function OnboardingScreen() {
             accessibilityRole="button"
             accessibilityLabel="Skip onboarding"
             className="min-h-8 justify-center px-1"
-            onPress={finishOnboarding}
+            disabled={isCompleting}
+            onPress={() => {
+              void finishOnboarding();
+            }}
+            style={{ opacity: isCompleting ? 0.6 : 1 }}
           >
             <Text className="font-headly-medium text-sm text-headly-teal">
               Skip
@@ -233,6 +273,12 @@ export default function OnboardingScreen() {
       </View>
 
       <View className="gap-[30px] px-7 pb-9">
+        {completionError ? (
+          <Text className="text-center font-headly text-[12px] leading-[18px] text-red-500">
+            {completionError}
+          </Text>
+        ) : null}
+
         <View className="h-[10px] flex-row items-center justify-center gap-[11px]">
           {onboardingPages.map((page, index) => (
             <View
@@ -249,11 +295,17 @@ export default function OnboardingScreen() {
         <Pressable
           accessibilityRole="button"
           className="h-12 items-center justify-center rounded-[14px] bg-headly-teal"
+          disabled={isCompleting}
           onPress={handleNextPress}
+          style={{ opacity: isCompleting ? 0.72 : 1 }}
         >
-          <Text className="font-headly-medium text-base text-white">
-            {isLastPage ? "Get Started" : "Next"}
-          </Text>
+          {isCompleting ? (
+            <ActivityIndicator color="#FFFFFF" size="small" />
+          ) : (
+            <Text className="font-headly-medium text-base text-white">
+              {isLastPage ? "Get Started" : "Next"}
+            </Text>
+          )}
         </Pressable>
       </View>
     </SafeAreaView>

@@ -1,16 +1,16 @@
-import { useAuth } from "@clerk/expo";
+import { useAuth, useUser } from "@clerk/expo";
 import { Image } from "expo-image";
-import type { Href } from "expo-router";
-import { Redirect, useRouter } from "expo-router";
+import { Redirect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants/images";
+import { hasCompletedOnboarding } from "@/lib/onboarding";
 import { colors } from "@/theme";
 
 export default function Index() {
-  const router = useRouter();
   const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded: isUserLoaded, user } = useUser();
 
   if (!isLoaded) {
     return null;
@@ -18,6 +18,14 @@ export default function Index() {
 
   if (!isSignedIn) {
     return <Redirect href="/sign-in" />;
+  }
+
+  if (!isUserLoaded || !user) {
+    return null;
+  }
+
+  if (!hasCompletedOnboarding(user.unsafeMetadata)) {
+    return <Redirect href="/onboarding" />;
   }
 
   return (
@@ -48,16 +56,6 @@ export default function Index() {
           <Text className="mt-3 max-w-[300px] text-center font-headly text-[15px] leading-[24px] text-headly-text-secondary">
             Track episodes, spot patterns, be in control.
           </Text>
-          <TouchableOpacity
-            accessibilityRole="button"
-            activeOpacity={0.88}
-            className="headly-auth__primary mt-10"
-            onPress={() => router.push("/onboarding" as Href)}
-          >
-            <Text className="font-headly-semibold text-[15px] leading-5 text-white">
-              Get Started
-            </Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

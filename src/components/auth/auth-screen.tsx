@@ -87,7 +87,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 
   const navigateAfterAuth = () => {
     setIsNavigatingAfterAuth(true);
-    router.replace("/onboarding");
+    router.replace("/");
   };
 
   const finalizeSignIn = async () => {
@@ -95,7 +95,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 
     const { error } = await signIn.finalize({
       navigate: ({ decorateUrl }) => {
-        const destination = decorateUrl("/onboarding");
+        const destination = decorateUrl("/");
 
         if (Platform.OS === "web" && destination.startsWith("http")) {
           window.location.href = destination;
@@ -120,7 +120,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 
     const { error } = await signUp.finalize({
       navigate: ({ decorateUrl }) => {
-        const destination = decorateUrl("/onboarding");
+        const destination = decorateUrl("/");
 
         if (Platform.OS === "web" && destination.startsWith("http")) {
           window.location.href = destination;
@@ -242,7 +242,7 @@ export function AuthScreen({ mode }: AuthScreenProps) {
       if (createdSessionId && setActive) {
         setIsNavigatingAfterAuth(true);
         await setActive({ session: createdSessionId });
-        router.replace("/onboarding");
+        router.replace("/");
         return;
       }
     } catch (error) {
