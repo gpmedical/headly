@@ -1,6 +1,33 @@
 const svgDataUri = (svg: string) =>
   `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 
+const homeIcon = (color: string, isFilled = false) =>
+  svgDataUri(
+    isFilled
+      ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="${color}" d="M4.3 10.5 12 4l7.7 6.5v8.2a1.8 1.8 0 0 1-1.8 1.8h-3.4v-5.2h-5v5.2H6.1a1.8 1.8 0 0 1-1.8-1.8v-8.2Z"/></svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M4.3 10.5 12 4l7.7 6.5v8.2a1.8 1.8 0 0 1-1.8 1.8h-3.4v-5.2h-5v5.2H6.1a1.8 1.8 0 0 1-1.8-1.8v-8.2Z" stroke="${color}" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
+  );
+
+const historyIcon = (color: string) =>
+  svgDataUri(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M5 12a7 7 0 1 0 2.05-4.95" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/><path d="M5 5.2v3.4h3.4" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8.4V12l2.6 1.7" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  );
+
+const bellIcon = (color: string) =>
+  svgDataUri(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M18 10.3a6 6 0 0 0-12 0v3.1l-1.4 2.2h14.8L18 13.4v-3.1Z" stroke="${color}" stroke-width="1.75" stroke-linejoin="round"/><path d="M9.7 18.4a2.5 2.5 0 0 0 4.6 0" stroke="${color}" stroke-width="1.75" stroke-linecap="round"/></svg>`,
+  );
+
+const statsIcon = (color: string) =>
+  svgDataUri(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M5 18.6V15" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/><path d="M10 18.6v-6.4" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/><path d="M15 18.6V9" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/><path d="M20 18.6V5.8" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/><path d="M4 19.2h17" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  );
+
+const settingsIcon = (color: string) =>
+  svgDataUri(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M4.8 7h14.4M4.8 12h14.4M4.8 17h14.4" stroke="${color}" stroke-width="1.9" stroke-linecap="round"/></svg>`,
+  );
+
 export const images = {
   logo: require("../../assets/images/logo.png"),
   onboarding: require("../../assets/images/onboarding.png"),
@@ -47,5 +74,63 @@ export const images = {
     uri: svgDataUri(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="m5.2 12.7 4.2 4.1 9.4-9.5" stroke="#0EA5A4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     ),
+  },
+  bellOutlineIcon: {
+    uri: bellIcon("#1F2740"),
+  },
+  chevronRightIcon: {
+    uri: svgDataUri(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none"><path d="m7.6 4.8 4.8 5.2-4.8 5.2" stroke="#1F2740" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    ),
+  },
+  clockTinyIcon: {
+    uri: svgDataUri(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.3" stroke="#667085" stroke-width="1.45"/><path d="M9 5.7v3.6l2.45 1.45" stroke="#667085" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    ),
+  },
+  locationTinyIcon: {
+    uri: svgDataUri(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><path d="M12.95 7.55c0 3.05-3.95 6.1-3.95 6.1S5.05 10.6 5.05 7.55a3.95 3.95 0 0 1 7.9 0Z" stroke="#667085" stroke-width="1.45"/><circle cx="9" cy="7.55" r="1.3" stroke="#667085" stroke-width="1.45"/></svg>`,
+    ),
+  },
+  symptomTinyIcon: {
+    uri: svgDataUri(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><circle cx="6.4" cy="6.1" r="2.35" stroke="#667085" stroke-width="1.35"/><path d="M2.7 14c.55-2 1.8-3.25 3.7-3.25 1.9 0 3.15 1.25 3.7 3.25" stroke="#667085" stroke-width="1.35" stroke-linecap="round"/><path d="M11.5 5.4c1.45.25 2.35 1.2 2.55 2.55M11.8 11.1c1.35.35 2.25 1.35 2.7 2.9" stroke="#667085" stroke-width="1.35" stroke-linecap="round"/></svg>`,
+    ),
+  },
+  plusIcon: {
+    uri: svgDataUri(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none"><path d="M10 4.7v10.6M4.7 10h10.6" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round"/></svg>`,
+    ),
+  },
+  tabHome: {
+    uri: homeIcon("#7A8192"),
+  },
+  tabHomeActive: {
+    uri: homeIcon("#14A4A1", true),
+  },
+  tabHistory: {
+    uri: historyIcon("#7A8192"),
+  },
+  tabHistoryActive: {
+    uri: historyIcon("#14A4A1"),
+  },
+  tabStats: {
+    uri: statsIcon("#7A8192"),
+  },
+  tabStatsActive: {
+    uri: statsIcon("#14A4A1"),
+  },
+  tabReminders: {
+    uri: bellIcon("#7A8192"),
+  },
+  tabRemindersActive: {
+    uri: bellIcon("#14A4A1"),
+  },
+  tabSettings: {
+    uri: settingsIcon("#7A8192"),
+  },
+  tabSettingsActive: {
+    uri: settingsIcon("#14A4A1"),
   },
 } as const;
