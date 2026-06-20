@@ -1,12 +1,12 @@
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import { type Href, router } from "expo-router";
+import { useState } from "react";
 import {
   Pressable,
   ScrollView,
   Text,
   type ViewStyle,
-  useWindowDimensions,
   View,
 } from "react-native";
 
@@ -51,7 +51,7 @@ function TrendLine({ width }: { width: number }) {
   });
 
   return (
-    <View style={{ height: chartHeight, width }} className="relative mt-[19px]">
+    <View style={{ height: chartHeight, width }} className="relative">
       {segments.map((segment, index) => (
         <View
           key={`${segment.left}-${index}`}
@@ -72,8 +72,7 @@ function TrendLine({ width }: { width: number }) {
 
 export default function HomeScreen() {
   const { user } = useUser();
-  const { width } = useWindowDimensions();
-  const chartWidth = Math.min(width - 82, 300);
+  const [chartWidth, setChartWidth] = useState(0);
   const firstName = user?.firstName?.trim();
   const greeting = firstName ? `Hello, ${firstName}` : "Hello!";
 
@@ -132,7 +131,23 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          <TrendLine width={chartWidth} />
+          <View
+            className="mt-[19px] w-full"
+            onLayout={(event) => {
+              const nextWidth = event.nativeEvent.layout.width;
+              setChartWidth((currentWidth) =>
+                Math.abs(currentWidth - nextWidth) > 0.5
+                  ? nextWidth
+                  : currentWidth,
+              );
+            }}
+          >
+            {chartWidth > 0 ? (
+              <TrendLine width={chartWidth} />
+            ) : (
+              <View style={{ height: chartHeight }} />
+            )}
+          </View>
 
           <View className="mt-[5px] flex-row justify-between">
             <Text className="font-headly-medium text-[10px] leading-[13px] text-[#667085]">
