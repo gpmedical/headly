@@ -142,6 +142,7 @@ export function mapSupabaseEpisodeToHistoryEntry(
     location: episode.location ?? "Unknown",
     medicationsTaken: episode.medications_taken ?? [],
     startDateTime: episode.start_at,
+    triggers: episode.triggers ?? [],
     symptoms: episode.symptoms ?? [],
   });
 }

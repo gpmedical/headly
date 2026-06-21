@@ -6,6 +6,7 @@ export type HeadacheEpisode = {
   endDateTime: string;
   intensity: number;
   location: string;
+  triggers: string[];
   symptoms: string[];
   medicationsTaken: string[];
 };
@@ -34,5 +35,6 @@ export type SupabaseHeadacheEpisodeRow = {
   medications_taken: string[] | null;
   start_at: string;
   intensity: number | null;
+  triggers: string[] | null;
   symptoms: string[] | null;
 };
