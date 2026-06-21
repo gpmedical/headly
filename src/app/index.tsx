@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
 import { type Href, router } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -12,12 +12,13 @@ import {
 
 import { MainScreen } from "@/components/navigation/main-screen";
 import { images } from "@/constants/images";
+import { dashboardReminder } from "@/data/dashboard";
+import { useHeadacheHistory } from "@/hooks/use-headache-history";
 import {
-  dashboardLastEpisode,
-  dashboardMetrics,
-  dashboardReminder,
-  dashboardTrend,
-} from "@/data/dashboard";
+  getDashboardLastEpisode,
+  getDashboardMetrics,
+  getDashboardTrend,
+} from "@/lib/history";
 
 const chartHeight = 70;
 const interactiveScale: ViewStyle = { transform: [{ scale: 0.98 }] };
@@ -30,13 +31,25 @@ function navigateTo(href: Href) {
   router.push(href);
 }
 
-function TrendLine({ width }: { width: number }) {
-  const segments = dashboardTrend.slice(0, -1).map((point, index) => {
-    const nextPoint = dashboardTrend[index + 1];
+function getTrendY(intensity: number) {
+  const clampedIntensity = Math.max(0, Math.min(10, intensity));
+
+  return chartHeight - 8 - (clampedIntensity / 10) * (chartHeight - 16);
+}
+
+function TrendLine({
+  points,
+  width,
+}: {
+  points: { intensity: number; x: number }[];
+  width: number;
+}) {
+  const segments = points.slice(0, -1).map((point, index) => {
+    const nextPoint = points[index + 1];
     const x1 = point.x * width;
-    const y1 = point.y;
+    const y1 = getTrendY(point.intensity);
     const x2 = nextPoint.x * width;
-    const y2 = nextPoint.y;
+    const y2 = getTrendY(nextPoint.intensity);
     const dx = x2 - x1;
     const dy = y2 - y1;
     const length = Math.sqrt(dx * dx + dy * dy);
@@ -73,6 +86,35 @@ function TrendLine({ width }: { width: number }) {
 export default function HomeScreen() {
   const { user } = useUser();
   const [chartWidth, setChartWidth] = useState(0);
+  const monthlyHistoryQuery = useMemo(
+    () => ({
+      minimumIntensity: 0,
+      range: "month" as const,
+    }),
+    [],
+  );
+  const allHistoryQuery = useMemo(
+    () => ({
+      minimumIntensity: 0,
+      range: "all" as const,
+    }),
+    [],
+  );
+  const { data: monthlyHistoryEntries } =
+    useHeadacheHistory(monthlyHistoryQuery);
+  const { data: allHistoryEntries } = useHeadacheHistory(allHistoryQuery);
+  const dashboardMetrics = useMemo(
+    () => getDashboardMetrics(monthlyHistoryEntries),
+    [monthlyHistoryEntries],
+  );
+  const dashboardTrend = useMemo(
+    () => getDashboardTrend(monthlyHistoryEntries),
+    [monthlyHistoryEntries],
+  );
+  const dashboardLastEpisode = useMemo(
+    () => getDashboardLastEpisode(allHistoryEntries),
+    [allHistoryEntries],
+  );
   const firstName = user?.firstName?.trim();
   const greeting = firstName ? `Hello, ${firstName}` : "Hello!";
 
@@ -142,8 +184,8 @@ export default function HomeScreen() {
               );
             }}
           >
-            {chartWidth > 0 ? (
-              <TrendLine width={chartWidth} />
+            {chartWidth > 0 && dashboardTrend.length > 0 ? (
+              <TrendLine points={dashboardTrend} width={chartWidth} />
             ) : (
               <View style={{ height: chartHeight }} />
             )}
@@ -171,11 +213,11 @@ export default function HomeScreen() {
 
           <View className="mt-[13px] flex-row items-center justify-between">
             <Text className="font-headly-medium text-[13px] leading-[17px] text-[#1F2937]">
-              {dashboardLastEpisode.date}
+              {dashboardLastEpisode?.date ?? "No episodes logged"}
             </Text>
             <View className="h-[24px] min-w-[62px] items-center justify-center rounded-full bg-[#9075CB] px-3">
               <Text className="font-headly-semibold text-[13px] leading-[16px] text-white">
-                {dashboardLastEpisode.intensity}
+                {dashboardLastEpisode?.intensity ?? "0/10"}
               </Text>
             </View>
           </View>
@@ -188,7 +230,7 @@ export default function HomeScreen() {
                 style={{ height: 17, width: 17 }}
               />
               <Text className="font-headly-medium text-[13px] leading-[17px] text-[#374151]">
-                {dashboardLastEpisode.location}
+                {dashboardLastEpisode?.location ?? "No location"}
               </Text>
             </View>
 
@@ -199,7 +241,7 @@ export default function HomeScreen() {
                 style={{ height: 17, width: 17 }}
               />
               <Text className="font-headly-medium text-[13px] leading-[17px] text-[#374151]">
-                {dashboardLastEpisode.duration}
+                {dashboardLastEpisode?.duration ?? "0h 0m"}
               </Text>
             </View>
           </View>
@@ -211,7 +253,7 @@ export default function HomeScreen() {
               style={{ height: 17, width: 17 }}
             />
             <Text className="font-headly-medium text-[13px] leading-[17px] text-[#374151]">
-              {dashboardLastEpisode.symptoms}
+              {dashboardLastEpisode?.symptoms ?? "No symptoms logged"}
             </Text>
           </View>
         </View>

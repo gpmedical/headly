@@ -28,6 +28,16 @@ const settingsIcon = (color: string) =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M4.8 7h14.4M4.8 12h14.4M4.8 17h14.4" stroke="${color}" stroke-width="1.9" stroke-linecap="round"/></svg>`,
   );
 
+const filterIcon = (color: string) =>
+  svgDataUri(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M4.6 5.7h14.8l-5.8 6.7v4.8l-3.2 1.7v-6.5L4.6 5.7Z" stroke="${color}" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  );
+
+const headTinyIcon = (color: string) =>
+  svgDataUri(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><path d="M6.9 14.3v-1.5c-1.8-.75-2.9-2.35-2.9-4.3 0-2.85 2.15-5 5.15-5 2.8 0 4.85 1.9 4.85 4.65 0 1.75-.8 3.2-2.2 4.05v2.1" stroke="${color}" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.45 9.55h2.15M10.8 9.55h1.2" stroke="${color}" stroke-width="1.35" stroke-linecap="round"/></svg>`,
+  );
+
 export const images = {
   logo: require("../../assets/images/logo.png"),
   onboarding: require("../../assets/images/onboarding.png"),
@@ -102,6 +112,12 @@ export const images = {
     uri: svgDataUri(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none"><path d="M10 4.7v10.6M4.7 10h10.6" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round"/></svg>`,
     ),
+  },
+  filterIcon: {
+    uri: filterIcon("#1F2740"),
+  },
+  historyHeadTinyIcon: {
+    uri: headTinyIcon("#667085"),
   },
   tabHome: {
     uri: homeIcon("#7A8192"),
