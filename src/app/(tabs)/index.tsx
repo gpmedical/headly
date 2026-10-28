@@ -156,6 +156,25 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
+        <Pressable
+          accessibilityLabel="Log new headache"
+          accessibilityRole="button"
+          className="headly-dashboard__cta mb-[24px] cursor-pointer hover:bg-[#159B99] hover:shadow-headly-md active:bg-[#0F8F8D]"
+          onPress={() => {
+            navigateTo("/log-headache" as Href);
+          }}
+          style={interactiveFeedback}
+        >
+          <Image
+            source={images.plusIcon}
+            contentFit="contain"
+            style={{ height: 18, width: 18 }}
+          />
+          <Text className="ml-[12px] font-headly-semibold text-[14px] leading-[18px] text-white">
+            Log New Headache
+          </Text>
+        </Pressable>
+
         <View className="headly-dashboard__hero px-[24px] pb-[24px] pt-[24px]">
           <Text className="font-headly-semibold text-[15px] leading-[21px] text-[#111827]">
             This Month
@@ -292,25 +311,6 @@ export default function HomeScreen() {
             contentFit="contain"
             style={{ height: 20, width: 20 }}
           />
-        </Pressable>
-
-        <Pressable
-          accessibilityLabel="Log new headache"
-          accessibilityRole="button"
-          className="headly-dashboard__cta mt-[22px] cursor-pointer hover:bg-[#159B99] hover:shadow-headly-md active:bg-[#0F8F8D]"
-          onPress={() => {
-            navigateTo("/log-headache" as Href);
-          }}
-          style={interactiveFeedback}
-        >
-          <Image
-            source={images.plusIcon}
-            contentFit="contain"
-            style={{ height: 18, width: 18 }}
-          />
-          <Text className="ml-[12px] font-headly-semibold text-[14px] leading-[18px] text-white">
-            Log New Headache
-          </Text>
         </Pressable>
       </ScrollView>
     </MainScreen>
