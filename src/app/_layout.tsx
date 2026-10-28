@@ -38,8 +38,19 @@ export default function RootLayout() {
         screenOptions={{
           contentStyle: { backgroundColor: colors.neutral.background },
           headerShown: false,
+          headerTintColor: colors.neutral.textSecondary,
+          animation: "fade",
         }}
-      />
+      >
+        <Stack.Screen
+          name="log-headache"
+          options={{
+            headerShown: true,
+            title: "Log New Headache",
+            headerBackTitle: "Back",
+          }}
+        />
+      </Stack>
     </ClerkProvider>
   );
 }

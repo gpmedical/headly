@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { hasCompletedOnboarding } from "@/lib/onboarding";
 
-import { BottomTabBar } from "./bottom-tab-bar";
+
 
 type MainScreenProps = {
   children: ReactNode;
@@ -15,7 +15,7 @@ type MainScreenProps = {
 
 export function MainScreen({
   children,
-  backgroundColor = "#F7F6FF",
+  backgroundColor = "#F3F5F2",
 }: MainScreenProps) {
   const { isLoaded, isSignedIn } = useAuth();
   const { isLoaded: isUserLoaded, user } = useUser();
@@ -40,7 +40,7 @@ export function MainScreen({
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor }}>
       <StatusBar style="dark" />
       {children}
-      <BottomTabBar />
+
     </SafeAreaView>
   );
 }

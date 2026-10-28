@@ -161,8 +161,8 @@ function MiniTrendChart({ points }: { points: StatsTrendPoint[] }) {
 
 export function StatisticsHeader() {
   return (
-    <View className="h-[38px] justify-center">
-      <Text className="text-center font-headly-semibold text-[16px] leading-[21px] text-[#111827]">
+    <View className="min-h-[48px] justify-center">
+      <Text className="font-headly-semibold text-[28px] leading-[36px] text-[#111827]">
         Statistics
       </Text>
     </View>
@@ -177,7 +177,7 @@ export function StatsTabBar({
   onChange: (tab: StatsTab) => void;
 }) {
   return (
-    <View className="mt-[17px] h-[31px] flex-row items-center justify-between">
+    <View className="mt-[24px] flex-row flex-wrap items-center gap-[4px] rounded-[18px] bg-[#E4EAE9] p-[5px]">
       {tabs.map((tab) => {
         const isSelected = activeTab === tab.value;
 
@@ -188,8 +188,8 @@ export function StatsTabBar({
             accessibilityState={{ selected: isSelected }}
             className={
               isSelected
-                ? "h-[26px] cursor-pointer items-center justify-center rounded-full bg-[#14A4A1] px-[15px]"
-                : "h-[26px] cursor-pointer items-center justify-center rounded-full px-[8px] hover:bg-white/80 active:bg-white"
+                ? "min-h-[40px] grow cursor-pointer items-center justify-center rounded-[16px] bg-[#176B68] px-[10px]"
+                : "min-h-[40px] grow cursor-pointer items-center justify-center rounded-[16px] px-[10px] hover:bg-white/80 active:bg-white"
             }
             onPress={() => {
               onChange(tab.value);
@@ -256,7 +256,7 @@ function OverviewHeroCard({
 
   return (
     <View
-      className="headly-dashboard__card relative px-[17px] pb-[15px] pt-[16px]"
+      className="headly-dashboard__insight relative px-[24px] py-[24px]"
       style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between gap-[10px]">
@@ -274,7 +274,7 @@ function OverviewHeroCard({
       <View className="mt-[13px] flex-row items-end justify-between gap-[14px]">
         <View className="min-w-[88px]">
           <View className="flex-row items-end">
-            <Text className="font-headly-semibold text-[34px] leading-[38px] text-[#111827]">
+            <Text className="font-headly-semibold text-[48px] leading-[56px] text-[#111827]">
               {value}
             </Text>
             <Text className="mb-[4px] font-headly-medium text-[14px] leading-[18px] text-[#111827]">
@@ -315,7 +315,7 @@ function SmallMetricCard({
 }) {
   return (
     <View
-      className="headly-dashboard__card relative flex-1 px-[17px] pb-[17px] pt-[16px]"
+      className="headly-dashboard__card relative min-w-[140px] flex-1 px-[18px] py-[22px]"
       style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between gap-[7px]">
@@ -333,7 +333,7 @@ function SmallMetricCard({
           selectedRange={selectedRange}
         />
       </View>
-      <Text className="mt-[14px] font-headly-semibold text-[26px] leading-[31px] text-[#111827]">
+      <Text className="mt-[14px] font-headly-semibold text-[30px] leading-[38px] text-[#111827]">
         {data.value}
       </Text>
       <Text className="mt-[8px] font-headly-medium text-[11px] leading-[15px] text-[#7A8192]">
@@ -628,12 +628,12 @@ function EpisodesByMonthCard({
 
   return (
     <View
-      className="headly-dashboard__card relative px-[18px] pb-[18px] pt-[17px]"
+      className="headly-dashboard__card relative px-[22px] py-[24px]"
       style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between gap-[10px]">
         <View className="flex-1">
-          <Text className="font-headly-semibold text-[13px] leading-[17px] text-[#111827]">
+          <Text className="font-headly-semibold text-[16px] leading-[22px] text-[#111827]">
             Episodes by Month
           </Text>
           <Text className="mt-[2px] font-headly-medium text-[10px] leading-[13px] text-[#667085]">
@@ -737,12 +737,12 @@ function RankingCard({
 }) {
   return (
     <View
-      className="headly-dashboard__card relative px-[18px] pb-[16px] pt-[15px]"
+      className="headly-dashboard__card relative px-[22px] py-[24px]"
       style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between">
         <View className="flex-1 pr-[10px]">
-          <Text className="font-headly-semibold text-[13px] leading-[17px] text-[#111827]">
+          <Text className="font-headly-semibold text-[16px] leading-[22px] text-[#111827]">
             {title}
           </Text>
           <Text className="mt-[2px] font-headly-medium text-[10px] leading-[13px] text-[#667085]">
@@ -810,12 +810,12 @@ function TimeOfDayCard({
 
   return (
     <View
-      className="headly-dashboard__card relative px-[18px] pb-[17px] pt-[16px]"
+      className="headly-dashboard__card relative px-[22px] py-[24px]"
       style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between">
         <View className="flex-1 pr-[10px]">
-          <Text className="font-headly-semibold text-[13px] leading-[17px] text-[#111827]">
+          <Text className="font-headly-semibold text-[16px] leading-[22px] text-[#111827]">
             Time of Day
           </Text>
           <Text className="mt-[2px] font-headly-medium text-[10px] leading-[13px] text-[#667085]">
@@ -867,7 +867,7 @@ function OverviewContent({
   stats: StatsData;
 }) {
   return (
-    <View className="relative gap-[16px]" style={{ overflow: "visible" }}>
+    <View className="relative gap-[20px]" style={{ overflow: "visible" }}>
       <OverviewHeroCard
         data={stats.averageIntensity}
         filterId="overview-intensity"
@@ -875,7 +875,7 @@ function OverviewContent({
         {...filterProps}
       />
 
-      <View className="relative flex-row gap-[12px]">
+      <View className="relative flex-row flex-wrap gap-[12px]">
         <SmallMetricCard
           data={stats.averageDuration}
           filterId="overview-duration"

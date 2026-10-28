@@ -190,12 +190,12 @@
   align-items: center;
   background-color: #ffffff;
   border-color: #e4e7ef;
-  border-radius: 15px;
+  border-radius: 18px;
   border-width: 1px;
   box-shadow: 0px 5px 14px rgba(15, 23, 42, 0.05);
   flex-direction: row;
   gap: 13px;
-  height: 49px;
+  min-height: 54px;
   padding-left: 16px;
   padding-right: 16px;
 }
@@ -203,10 +203,10 @@
 @utility headly-auth__primary {
   align-items: center;
   background-color: #14a4a1;
-  border-radius: 14px;
+  border-radius: 20px;
   box-shadow: 0px 8px 16px rgba(14, 165, 164, 0.18);
   flex-direction: row;
-  height: 50px;
+  min-height: 54px;
   justify-content: center;
   max-width: 318px;
   width: 100%;
@@ -216,27 +216,31 @@
   align-items: center;
   background-color: #ffffff;
   border-color: #e4e7ef;
-  border-radius: 14px;
+  border-radius: 20px;
   border-width: 1px;
   box-shadow: 0px 4px 12px rgba(15, 23, 42, 0.04);
   flex-direction: row;
-  height: 44px;
+  min-height: 50px;
   justify-content: center;
 }
 
 @utility headly-dashboard__card {
   background-color: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0px 8px 24px rgba(71, 85, 105, 0.06);
+  border-radius: 24px;
+  border-width: 1px;
+  border-color: #E6ECE7;
+  box-shadow: 0px 8px 24px rgba(35, 65, 57, 0.06);
 }
 
 @utility headly-dashboard__cta {
   align-items: center;
-  background-color: #14a4a1;
-  border-radius: 22px;
+  background-color: #176B68;
+  border-radius: 18px;
   box-shadow: 0px 8px 16px rgba(20, 164, 161, 0.2);
   flex-direction: row;
-  height: 43px;
+  min-height: 54px;
+  padding-top: 14px;
+  padding-bottom: 14px;
   justify-content: center;
 }
 
@@ -251,4 +255,27 @@
   padding-left: 14px;
   padding-right: 14px;
   padding-top: 6px;
+}
+
+@utility headly-dashboard__hero {
+  background-color: #DCEDE7;
+  border-radius: 30px;
+  border-width: 1px;
+  border-color: #CBDFD6;
+  box-shadow: 0px 12px 28px rgba(35, 65, 57, 0.08);
+}
+
+@utility headly-dashboard__insight {
+  background-color: #EAE4F4;
+  border-radius: 30px;
+  border-width: 1px;
+  border-color: #DDD3ED;
+  box-shadow: 0px 12px 28px rgba(92, 68, 128, 0.08);
+}
+
+@utility headly-dashboard__reminder {
+  background-color: #E8EDE4;
+  border-radius: 24px;
+  border-width: 1px;
+  border-color: #DAE2D5;
 }

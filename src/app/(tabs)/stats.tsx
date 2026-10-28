@@ -30,7 +30,7 @@ export default function StatsScreen() {
 
   return (
     <MainScreen>
-      <ScrollView
+      <ScrollView contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
           paddingBottom: 28,
           paddingHorizontal: 23,
@@ -41,7 +41,7 @@ export default function StatsScreen() {
         <StatisticsHeader />
         <StatsTabBar activeTab={activeTab} onChange={setActiveTab} />
 
-        <View className="mt-[17px]">
+        <View className="mt-[24px]">
           {isLoading ? (
             <View className="headly-dashboard__card items-center px-[18px] py-[28px]">
               <Text className="text-center font-headly-semibold text-[14px] leading-[19px] text-[#111827]">

@@ -39,6 +39,11 @@ const headTinyIcon = (color: string) =>
   );
 
 export const images = {
+  capsule: {
+    uri: svgDataUri(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><g transform="rotate(-42 16 16)"><rect x="5" y="10" width="22" height="12" rx="6" fill="#FFFFFF"/><path d="M16 10h5a6 6 0 0 1 0 12h-5V10Z" fill="#14847F"/><rect x="5" y="10" width="22" height="12" rx="6" stroke="#176B68" stroke-width="1.8"/><path d="M16 10v12" stroke="#176B68" stroke-width="1.5"/><path d="M9 14c.6-1 1.5-1.5 2.7-1.5" stroke="#A9D6D1" stroke-width="1.8" stroke-linecap="round"/></g></svg>',
+    ),
+  },
   logo: require("../../assets/images/logo.png"),
   onboarding: require("../../assets/images/onboarding.png"),
   onboardingTrack: require("../../assets/images/onboarding-track.png"),

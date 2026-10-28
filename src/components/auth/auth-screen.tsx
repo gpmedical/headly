@@ -266,7 +266,8 @@ export function AuthScreen({ mode }: AuthScreenProps) {
         <View className="min-h-full w-full items-center px-6">
           <Image
             source={images.logo}
-            className="mt-[74px] h-[65px] w-[190px]"
+            style={{ marginTop: 74, height: 65, width: 190 }}
+            accessibilityLabel="Headly"
             contentFit="contain"
           />
 
@@ -555,13 +556,13 @@ function EyeIcon({ isPasswordVisible }: { isPasswordVisible: boolean }) {
 
 function GoogleIcon() {
   return (
-    <Image source={images.googleLogo} className="h-[22px] w-[22px]" contentFit="contain" />
+    <Image source={images.googleLogo} style={{ height: 22, width: 22 }} contentFit="contain" />
   );
 }
 
 function AppleIcon() {
   return (
-    <Image source={images.appleLogo} className="h-[23px] w-[23px]" contentFit="contain" />
+    <Image source={images.appleLogo} style={{ height: 23, width: 23 }} contentFit="contain" />
   );
 }
 

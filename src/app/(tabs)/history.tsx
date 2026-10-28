@@ -129,12 +129,12 @@ function IntensitySlider({ value, onChange }: IntensitySliderProps) {
       >
         <View className="h-[4px] rounded-full bg-[#E6EEF2]">
           <View
-            className="h-[4px] rounded-full bg-[#14A4A1]"
+            className="h-[4px] rounded-full bg-[#176B68]"
             style={{ width: fillWidth }}
           />
         </View>
         <View
-          className="absolute top-[5px] h-[18px] w-[18px] rounded-full border-[3px] border-white bg-[#14A4A1]"
+          className="absolute top-[5px] h-[18px] w-[18px] rounded-full border-[3px] border-white bg-[#176B68]"
           style={{
             boxShadow: "0px 3px 8px rgba(20, 164, 161, 0.28)",
             left: Math.max(0, fillWidth - 9),
@@ -145,29 +145,20 @@ function IntensitySlider({ value, onChange }: IntensitySliderProps) {
   );
 }
 
-function HistoryEntryRow({
-  entry,
-  isLast,
-}: {
-  entry: HeadacheHistoryEntry;
-  isLast: boolean;
-}) {
+function HistoryEntryRow({ entry }: { entry: HeadacheHistoryEntry }) {
   const intensityStyle = getIntensityStyle(entry.intensity);
 
   return (
     <View
-      className={
-        isLast
-          ? "px-[16px] pb-[13px] pt-[12px]"
-          : "border-b border-[#EEF0F5] px-[16px] pb-[13px] pt-[12px]"
-      }
+      className="headly-dashboard__card px-[20px] py-[20px]"
+      style={{ borderLeftWidth: 4, borderLeftColor: intensityStyle.backgroundColor }}
     >
       <View className="flex-row items-center justify-between">
-        <Text className="font-headly-medium text-[12px] leading-[16px] text-[#1F2937]">
+        <Text className="font-headly-semibold text-[14px] leading-[20px] text-[#1F2937]">
           {getHistoryEntryDateLabel(entry)} {entry.time}
         </Text>
         <View
-          className="h-[19px] min-w-[46px] items-center justify-center rounded-full px-[10px]"
+          className="min-h-[34px] min-w-[60px] items-center justify-center rounded-full px-[10px]"
           style={{ backgroundColor: intensityStyle.backgroundColor }}
         >
           <Text
@@ -179,7 +170,7 @@ function HistoryEntryRow({
         </View>
       </View>
 
-      <View className="mt-[6px] flex-row items-center">
+      <View className="mt-[14px] flex-row flex-wrap items-center gap-y-[8px]">
         <View className="min-w-[111px] flex-row items-center gap-[8px]">
           <Image
             source={images.historyHeadTinyIcon}
@@ -231,7 +222,7 @@ export default function HistoryScreen() {
 
   return (
     <MainScreen>
-      <ScrollView
+      <ScrollView contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
           paddingBottom: 26,
           paddingHorizontal: 23,
@@ -239,15 +230,15 @@ export default function HistoryScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="relative h-[38px] justify-center">
-          <Text className="text-center font-headly-semibold text-[16px] leading-[21px] text-[#111827]">
+        <View className="relative min-h-[48px] justify-center">
+          <Text className="font-headly-semibold text-[28px] leading-[36px] text-[#111827]">
             History
           </Text>
 
           <Pressable
             accessibilityLabel={showFilters ? "Hide filters" : "Show filters"}
             accessibilityRole="button"
-            className="absolute right-0 top-[2px] h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-full hover:bg-white/80 active:bg-white"
+            className="absolute right-0 top-[4px] h-[44px] w-[44px] bg-white cursor-pointer items-center justify-center rounded-full hover:bg-white/80 active:bg-white"
             onPress={() => {
               setShowFilters((isVisible) => !isVisible);
             }}
@@ -261,7 +252,7 @@ export default function HistoryScreen() {
           </Pressable>
         </View>
 
-        <View className="mt-[17px] h-[26px] flex-row rounded-full border border-[#DEE4EC] bg-[#F5F6FA] p-[2px]">
+        <View className="mt-[24px] min-h-[52px] flex-row rounded-[18px] bg-[#E4EAE9] p-[5px]">
           {historyRangeOptions.map((option) => {
             const isSelected = selectedRange === option.value;
 
@@ -272,8 +263,8 @@ export default function HistoryScreen() {
                 accessibilityState={{ selected: isSelected }}
                 className={
                   isSelected
-                    ? "h-[20px] flex-1 cursor-pointer items-center justify-center rounded-full bg-[#14A4A1]"
-                    : "h-[20px] flex-1 cursor-pointer items-center justify-center rounded-full"
+                    ? "min-h-[42px] flex-1 cursor-pointer items-center justify-center rounded-[14px] bg-[#176B68]"
+                    : "min-h-[42px] flex-1 cursor-pointer items-center justify-center rounded-[14px]"
                 }
                 onPress={() => {
                   setSelectedRange(option.value);
@@ -283,8 +274,8 @@ export default function HistoryScreen() {
                 <Text
                   className={
                     isSelected
-                      ? "font-headly-semibold text-[10px] leading-[13px] text-white"
-                      : "font-headly-medium text-[10px] leading-[13px] text-[#566071]"
+                      ? "font-headly-semibold text-[12px] leading-[17px] text-white"
+                      : "font-headly-medium text-[12px] leading-[17px] text-[#566071]"
                   }
                 >
                   {option.label}
@@ -319,7 +310,7 @@ export default function HistoryScreen() {
           </View>
         ) : null}
 
-        <View className="mt-[16px] gap-[10px]">
+        <View className="mt-[26px] gap-[26px]">
           {isLoading ? (
             <View className="headly-dashboard__card items-center px-[18px] py-[28px]">
               <Text className="text-center font-headly-semibold text-[14px] leading-[19px] text-[#111827]">
@@ -335,15 +326,14 @@ export default function HistoryScreen() {
           ) : sections.length > 0 ? (
             sections.map((section) => (
               <View key={section.title}>
-                <Text className="mb-[7px] font-headly-medium text-[11px] leading-[15px] text-[#374151]">
+                <Text className="mb-[12px] font-headly-semibold text-[13px] leading-[18px] text-[#566C69]">
                   {section.title}
                 </Text>
-                <View className="headly-dashboard__card overflow-hidden">
-                  {section.data.map((entry, index) => (
+                <View className="gap-[12px]">
+                  {section.data.map((entry) => (
                     <HistoryEntryRow
                       key={entry.id}
                       entry={entry}
-                      isLast={index === section.data.length - 1}
                     />
                   ))}
                 </View>

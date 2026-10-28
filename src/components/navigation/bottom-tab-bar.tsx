@@ -75,7 +75,7 @@ export function BottomTabBar() {
             className="h-[48px] flex-1 cursor-pointer items-center justify-center gap-[3px] rounded-[12px] hover:bg-[#F2F7F7] active:bg-[#E6F6F5]"
             onPress={() => {
               if (!isActive) {
-                router.replace(tab.href as Href);
+                router.navigate((tab.href === "/" ? "/(tabs)" : tab.href) as Href);
               }
             }}
             style={tabFeedback}
