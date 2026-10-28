@@ -7,6 +7,7 @@ import {
 } from "@/types/history";
 
 type HeadacheHistoryState = {
+  query: HeadacheHistoryQuery | null;
   data: HeadacheHistoryEntry[];
   error: string | null;
   isLoading: boolean;
@@ -14,6 +15,7 @@ type HeadacheHistoryState = {
 
 export function useHeadacheHistory(query: HeadacheHistoryQuery) {
   const [state, setState] = useState<HeadacheHistoryState>({
+    query: null,
     data: [],
     error: null,
     isLoading: true,
@@ -22,12 +24,6 @@ export function useHeadacheHistory(query: HeadacheHistoryQuery) {
   useEffect(() => {
     let isMounted = true;
 
-    setState((currentState) => ({
-      ...currentState,
-      error: null,
-      isLoading: true,
-    }));
-
     getHeadacheHistoryEntries(query)
       .then((entries) => {
         if (!isMounted) {
@@ -35,6 +31,7 @@ export function useHeadacheHistory(query: HeadacheHistoryQuery) {
         }
 
         setState({
+          query,
           data: entries,
           error: null,
           isLoading: false,
@@ -46,6 +43,7 @@ export function useHeadacheHistory(query: HeadacheHistoryQuery) {
         }
 
         setState({
+          query,
           data: [],
           error: "Unable to load headache history.",
           isLoading: false,
@@ -57,5 +55,9 @@ export function useHeadacheHistory(query: HeadacheHistoryQuery) {
     };
   }, [query]);
 
-  return state;
+  return {
+    data: state.data,
+    error: state.query === query ? state.error : null,
+    isLoading: state.query !== query || state.isLoading,
+  };
 }

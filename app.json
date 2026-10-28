@@ -8,7 +8,7 @@
     "scheme": "headly",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/images/headly-icon.png",
       "bundleIdentifier": "com.gpmedical.headly",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -17,9 +17,7 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/images/headly-icon.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.gpmedical.headly"

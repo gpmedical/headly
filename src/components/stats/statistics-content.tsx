@@ -1,6 +1,14 @@
 import { Image } from "expo-image";
-import { useMemo, useState } from "react";
-import { Pressable, Text, type ViewStyle, View } from "react-native";
+import { useMemo, useRef, useState } from "react";
+import {
+  Modal,
+  Pressable,
+  Text,
+  useWindowDimensions,
+  type ViewStyle,
+  type ViewInstance,
+  View,
+} from "react-native";
 
 import {
   statsTimeRangeOptions,
@@ -23,12 +31,18 @@ const tabs: { label: string; value: StatsTab }[] = [
 const chartHeight = 72;
 const barChartHeight = 128;
 const interactiveScale: ViewStyle = { transform: [{ scale: 0.98 }] };
+const rangeMenuGap = 8;
+const rangeMenuHorizontalMargin = 12;
+const rangeMenuOptionHeight = 30;
+const rangeMenuVerticalPadding = 8;
+const rangeMenuWidth = 126;
 
 type RangeFilterProps = {
+  compact?: boolean;
   filterId: string;
   openFilterId: string | null;
   selectedRange: StatsTimeRange;
-  onToggleFilter: (filterId: string) => void;
+  onToggleFilter: (filterId: string, anchor?: RangeMenuAnchor) => void;
 };
 
 type RangeMenuProps = {
@@ -36,11 +50,19 @@ type RangeMenuProps = {
   onChangeRange: (range: StatsTimeRange) => void;
 };
 
+type RangeMenuAnchor = {
+  height: number;
+  preferredPlacement: "above" | "below";
+  width: number;
+  x: number;
+  y: number;
+};
+
 type InsightFilterProps = {
   openFilterId: string | null;
   selectedRange: StatsTimeRange;
   onChangeRange: (range: StatsTimeRange) => void;
-  onToggleFilter: (filterId: string) => void;
+  onToggleFilter: (filterId: string, anchor?: RangeMenuAnchor) => void;
 };
 
 function interactiveFeedback({ pressed }: { pressed: boolean }) {
@@ -57,18 +79,6 @@ function getTrendColor(direction: TrendDirection) {
   }
 
   return "#8A93A6";
-}
-
-function getTrendArrow(direction: TrendDirection) {
-  if (direction === "down") {
-    return "↓";
-  }
-
-  if (direction === "up") {
-    return "↑";
-  }
-
-  return "→";
 }
 
 function getSparklineY(intensity: number) {
@@ -205,16 +215,22 @@ export function StatsTabBar({
 function MetricTrend({
   delta,
   direction,
+  showTrend,
 }: {
   delta: string;
   direction: TrendDirection;
+  showTrend: boolean;
 }) {
+  if (!showTrend) {
+    return null;
+  }
+
   return (
     <Text
       className="mt-[7px] font-headly-semibold text-[12px] leading-[16px]"
       style={{ color: getTrendColor(direction) }}
     >
-      {getTrendArrow(direction)} {delta}
+      {delta}
     </Text>
   );
 }
@@ -234,19 +250,14 @@ function OverviewHeroCard({
   points: StatsTrendPoint[];
   selectedRange: StatsTimeRange;
   onChangeRange: (range: StatsTimeRange) => void;
-  onToggleFilter: (filterId: string) => void;
+  onToggleFilter: (filterId: string, anchor?: RangeMenuAnchor) => void;
 }) {
   const [value, denominator = "10"] = data.value.split("/");
-  const isFilterOpen = openFilterId === filterId;
 
   return (
     <View
       className="headly-dashboard__card relative px-[17px] pb-[15px] pt-[16px]"
-      style={{
-        elevation: isFilterOpen ? 90 : 1,
-        overflow: "visible",
-        zIndex: isFilterOpen ? 90 : 1,
-      }}
+      style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between gap-[10px]">
         <Text className="flex-1 font-headly-semibold text-[12px] leading-[16px] text-[#111827]">
@@ -273,18 +284,16 @@ function OverviewHeroCard({
           <Text className="mt-[6px] font-headly-medium text-[11px] leading-[15px] text-[#7A8192]">
             {data.helper}
           </Text>
-          <MetricTrend delta={data.delta} direction={data.direction} />
+          <MetricTrend
+            delta={data.delta}
+            direction={data.direction}
+            showTrend={data.showTrend}
+          />
         </View>
 
-        <MiniTrendChart points={points} />
+        {data.showTrend ? <MiniTrendChart points={points} /> : null}
       </View>
 
-      {isFilterOpen ? (
-        <RangeMenu
-          onChangeRange={onChangeRange}
-          selectedRange={selectedRange}
-        />
-      ) : null}
     </View>
   );
 }
@@ -302,31 +311,27 @@ function SmallMetricCard({
   openFilterId: string | null;
   selectedRange: StatsTimeRange;
   onChangeRange: (range: StatsTimeRange) => void;
-  onToggleFilter: (filterId: string) => void;
+  onToggleFilter: (filterId: string, anchor?: RangeMenuAnchor) => void;
 }) {
-  const isFilterOpen = openFilterId === filterId;
-
   return (
     <View
       className="headly-dashboard__card relative flex-1 px-[17px] pb-[17px] pt-[16px]"
-      style={{
-        elevation: isFilterOpen ? 90 : 1,
-        overflow: "visible",
-        zIndex: isFilterOpen ? 90 : 1,
-      }}
+      style={{ overflow: "visible" }}
     >
-      <View className="gap-[8px]">
-        <Text className="font-headly-semibold text-[12px] leading-[16px] text-[#111827]">
+      <View className="flex-row items-start justify-between gap-[7px]">
+        <Text
+          className="flex-1 font-headly-semibold text-[12px] leading-[16px] text-[#111827]"
+          numberOfLines={2}
+        >
           {data.label}
         </Text>
-        <View className="items-start">
-          <RangeFilterButton
-            filterId={filterId}
-            onToggleFilter={onToggleFilter}
-            openFilterId={openFilterId}
-            selectedRange={selectedRange}
-          />
-        </View>
+        <RangeFilterButton
+          compact
+          filterId={filterId}
+          onToggleFilter={onToggleFilter}
+          openFilterId={openFilterId}
+          selectedRange={selectedRange}
+        />
       </View>
       <Text className="mt-[14px] font-headly-semibold text-[26px] leading-[31px] text-[#111827]">
         {data.value}
@@ -334,14 +339,12 @@ function SmallMetricCard({
       <Text className="mt-[8px] font-headly-medium text-[11px] leading-[15px] text-[#7A8192]">
         {data.helper}
       </Text>
-      <MetricTrend delta={data.delta} direction={data.direction} />
+      <MetricTrend
+        delta={data.delta}
+        direction={data.direction}
+        showTrend={data.showTrend}
+      />
 
-      {isFilterOpen ? (
-        <RangeMenu
-          onChangeRange={onChangeRange}
-          selectedRange={selectedRange}
-        />
-      ) : null}
     </View>
   );
 }
@@ -361,31 +364,102 @@ function LegendDot({ color, label }: { color: string; label: string }) {
 }
 
 function RangeFilterButton({
+  compact = false,
   filterId,
   openFilterId,
   selectedRange,
   onToggleFilter,
 }: RangeFilterProps) {
+  const buttonContainerRef = useRef<ViewInstance>(null);
   const isOpen = openFilterId === filterId;
-  const selectedLabel =
+  const selectedOption =
     statsTimeRangeOptions.find((option) => option.value === selectedRange)
-      ?.label ?? "This month";
+      ?? statsTimeRangeOptions[0];
+  const compactLabels: Record<StatsTimeRange, string> = {
+    allTime: "All",
+    lastSixMonths: "6 mo",
+    lastYear: "Year",
+    thisMonth: "Month",
+  };
+  const selectedLabel = compact
+    ? compactLabels[selectedOption.value]
+    : selectedOption.label;
+
+  function openFilterMenu() {
+    const node = buttonContainerRef.current as unknown as {
+      getBoundingClientRect?: () => {
+        height: number;
+        left?: number;
+        top?: number;
+        width: number;
+        x?: number;
+        y?: number;
+      };
+      measureInWindow?: (
+        callback: (x: number, y: number, width: number, height: number) => void,
+      ) => void;
+    } | null;
+    const rect = node?.getBoundingClientRect?.();
+
+    if (rect) {
+      const x = rect.x ?? rect.left ?? 0;
+      const y = rect.y ?? rect.top ?? 0;
+
+      onToggleFilter(filterId, {
+        height: rect.height,
+        preferredPlacement: "below",
+        width: rect.width,
+        x,
+        y,
+      });
+      return;
+    }
+
+    node?.measureInWindow?.((x, y, width, height) => {
+      onToggleFilter(filterId, {
+        height,
+        preferredPlacement: "below",
+        width,
+        x,
+        y,
+      });
+    });
+
+    if (!node?.measureInWindow) {
+      onToggleFilter(filterId, {
+        height: 0,
+        preferredPlacement: "below",
+        width: rangeMenuWidth,
+        x: rangeMenuHorizontalMargin,
+        y: rangeMenuHorizontalMargin,
+      });
+    }
+  }
 
   return (
     <View
+      ref={buttonContainerRef}
       className="relative items-end"
       style={{ elevation: isOpen ? 60 : 1, zIndex: isOpen ? 60 : 1 } as ViewStyle}
     >
       <Pressable
-        accessibilityLabel={`Change range, current range ${selectedLabel}`}
+        accessibilityLabel={`Change range, current range ${selectedOption.label}`}
         accessibilityRole="button"
-        className="h-[26px] cursor-pointer items-center justify-center rounded-full border border-[#D8EDEA] bg-[#F3FBFA] px-[11px] hover:bg-[#E8F8F7] active:bg-[#DDF4F3]"
-        onPress={() => {
-          onToggleFilter(filterId);
-        }}
+        className={
+          compact
+            ? "h-[24px] min-w-[48px] cursor-pointer items-center justify-center rounded-full border border-[#D8EDEA] bg-[#F3FBFA] px-[8px] hover:bg-[#E8F8F7] active:bg-[#DDF4F3]"
+            : "h-[26px] cursor-pointer items-center justify-center rounded-full border border-[#D8EDEA] bg-[#F3FBFA] px-[11px] hover:bg-[#E8F8F7] active:bg-[#DDF4F3]"
+        }
+        onPress={openFilterMenu}
         style={interactiveFeedback}
       >
-        <Text className="font-headly-semibold text-[10px] leading-[13px] text-[#0E817F]">
+        <Text
+          className={
+            compact
+              ? "font-headly-semibold text-[9px] leading-[12px] text-[#0E817F]"
+              : "font-headly-semibold text-[10px] leading-[13px] text-[#0E817F]"
+          }
+        >
           {selectedLabel}
         </Text>
       </Pressable>
@@ -396,10 +470,18 @@ function RangeFilterButton({
 function RangeMenu({ selectedRange, onChangeRange }: RangeMenuProps) {
   return (
     <View
-      className="absolute right-[18px] top-[46px] w-[126px] rounded-[12px] border border-[#D9E5EB] bg-white py-[4px]"
+      className="w-[126px] rounded-[12px] border border-[#D9E5EB] bg-white py-[4px]"
       style={{
-        boxShadow: "0px 10px 24px rgba(15, 23, 42, 0.16)",
-        elevation: 100,
+        backgroundColor: "#FFFFFF",
+        borderColor: "#B7CBD6",
+        borderWidth: 1.5,
+        boxShadow:
+          "0px 18px 40px rgba(15, 23, 42, 0.28), 0px 0px 0px 1px rgba(15, 23, 42, 0.08)",
+        elevation: 1000,
+        shadowColor: "#0F172A",
+        shadowOffset: { height: 12, width: 0 },
+        shadowOpacity: 0.22,
+        shadowRadius: 22,
         zIndex: 100,
       }}
     >
@@ -437,6 +519,86 @@ function RangeMenu({ selectedRange, onChangeRange }: RangeMenuProps) {
   );
 }
 
+function RangeMenuOverlay({
+  anchor,
+  selectedRange,
+  visible,
+  onChangeRange,
+  onClose,
+}: {
+  anchor: RangeMenuAnchor | null;
+  selectedRange: StatsTimeRange;
+  visible: boolean;
+  onChangeRange: (range: StatsTimeRange) => void;
+  onClose: () => void;
+}) {
+  const { height: viewportHeight, width: viewportWidth } = useWindowDimensions();
+  const menuHeight =
+    statsTimeRangeOptions.length * rangeMenuOptionHeight +
+    rangeMenuVerticalPadding;
+
+  if (!visible || anchor === null) {
+    return null;
+  }
+
+  const maxMenuLeft = Math.max(
+    rangeMenuHorizontalMargin,
+    viewportWidth - rangeMenuWidth - rangeMenuHorizontalMargin,
+  );
+  const menuLeft = Math.min(
+    Math.max(rangeMenuHorizontalMargin, anchor.x + anchor.width - rangeMenuWidth),
+    maxMenuLeft,
+  );
+  const belowTop = anchor.y + anchor.height + rangeMenuGap;
+  const aboveTop = anchor.y - menuHeight - rangeMenuGap;
+  const hasSpaceBelow =
+    belowTop + menuHeight <= viewportHeight - rangeMenuHorizontalMargin;
+  const hasSpaceAbove = aboveTop >= rangeMenuHorizontalMargin;
+  const shouldOpenAbove =
+    anchor.preferredPlacement === "above"
+      ? hasSpaceAbove || !hasSpaceBelow
+      : !hasSpaceBelow && hasSpaceAbove;
+  const preferredTop = shouldOpenAbove ? aboveTop : belowTop;
+  const maxMenuTop = Math.max(
+    rangeMenuHorizontalMargin,
+    viewportHeight - menuHeight - rangeMenuHorizontalMargin,
+  );
+  const menuTop = Math.min(
+    Math.max(rangeMenuHorizontalMargin, preferredTop),
+    maxMenuTop,
+  );
+
+  return (
+    <Modal
+      animationType="none"
+      onRequestClose={onClose}
+      transparent
+      visible={visible}
+    >
+      <Pressable onPress={onClose} style={{ flex: 1 }}>
+        <Pressable
+          onPress={(event) => {
+            event.stopPropagation();
+          }}
+          style={
+            {
+              left: menuLeft,
+              position: "absolute",
+              top: menuTop,
+              zIndex: 1000,
+            } as ViewStyle
+          }
+        >
+          <RangeMenu
+            onChangeRange={onChangeRange}
+            selectedRange={selectedRange}
+          />
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+}
+
 function EpisodesByMonthCard({
   data,
   filterId,
@@ -450,13 +612,12 @@ function EpisodesByMonthCard({
   openFilterId: string | null;
   selectedRange: StatsTimeRange;
   onChangeRange: (range: StatsTimeRange) => void;
-  onToggleFilter: (filterId: string) => void;
+  onToggleFilter: (filterId: string, anchor?: RangeMenuAnchor) => void;
 }) {
   const maxValue = Math.max(
     1,
     ...data.map((item) => Math.max(item.thisYear, item.lastYear)),
   );
-  const isFilterOpen = openFilterId === filterId;
   const selectedLabel =
     statsTimeRangeOptions.find((option) => option.value === selectedRange)
       ?.label ?? "This month";
@@ -468,11 +629,7 @@ function EpisodesByMonthCard({
   return (
     <View
       className="headly-dashboard__card relative px-[18px] pb-[18px] pt-[17px]"
-      style={{
-        elevation: isFilterOpen ? 90 : 1,
-        overflow: "visible",
-        zIndex: isFilterOpen ? 90 : 1,
-      }}
+      style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between gap-[10px]">
         <View className="flex-1">
@@ -553,12 +710,6 @@ function EpisodesByMonthCard({
         </View>
       </View>
 
-      {isFilterOpen ? (
-        <RangeMenu
-          onChangeRange={onChangeRange}
-          selectedRange={selectedRange}
-        />
-      ) : null}
     </View>
   );
 }
@@ -582,18 +733,12 @@ function RankingCard({
   selectedRange: StatsTimeRange;
   title: string;
   onChangeRange: (range: StatsTimeRange) => void;
-  onToggleFilter: (filterId: string) => void;
+  onToggleFilter: (filterId: string, anchor?: RangeMenuAnchor) => void;
 }) {
-  const isFilterOpen = openFilterId === filterId;
-
   return (
     <View
       className="headly-dashboard__card relative px-[18px] pb-[16px] pt-[15px]"
-      style={{
-        elevation: isFilterOpen ? 90 : 1,
-        overflow: "visible",
-        zIndex: isFilterOpen ? 90 : 1,
-      }}
+      style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between">
         <View className="flex-1 pr-[10px]">
@@ -642,12 +787,6 @@ function RankingCard({
         )}
       </View>
 
-      {isFilterOpen ? (
-        <RangeMenu
-          onChangeRange={onChangeRange}
-          selectedRange={selectedRange}
-        />
-      ) : null}
     </View>
   );
 }
@@ -665,19 +804,14 @@ function TimeOfDayCard({
   openFilterId: string | null;
   selectedRange: StatsTimeRange;
   onChangeRange: (range: StatsTimeRange) => void;
-  onToggleFilter: (filterId: string) => void;
+  onToggleFilter: (filterId: string, anchor?: RangeMenuAnchor) => void;
 }) {
   const donutUri = useMemo(() => getDonutUri(items), [items]);
-  const isFilterOpen = openFilterId === filterId;
 
   return (
     <View
       className="headly-dashboard__card relative px-[18px] pb-[17px] pt-[16px]"
-      style={{
-        elevation: isFilterOpen ? 90 : 1,
-        overflow: "visible",
-        zIndex: isFilterOpen ? 90 : 1,
-      }}
+      style={{ overflow: "visible" }}
     >
       <View className="flex-row items-start justify-between">
         <View className="flex-1 pr-[10px]">
@@ -721,12 +855,6 @@ function TimeOfDayCard({
         </View>
       </View>
 
-      {isFilterOpen ? (
-        <RangeMenu
-          onChangeRange={onChangeRange}
-          selectedRange={selectedRange}
-        />
-      ) : null}
     </View>
   );
 }
@@ -739,7 +867,7 @@ function OverviewContent({
   stats: StatsData;
 }) {
   return (
-    <View className="gap-[16px]">
+    <View className="relative gap-[16px]" style={{ overflow: "visible" }}>
       <OverviewHeroCard
         data={stats.averageIntensity}
         filterId="overview-intensity"
@@ -747,7 +875,7 @@ function OverviewContent({
         {...filterProps}
       />
 
-      <View className="flex-row gap-[12px]">
+      <View className="relative flex-row gap-[12px]">
         <SmallMetricCard
           data={stats.averageDuration}
           filterId="overview-duration"
@@ -787,64 +915,99 @@ export function StatisticsContent({
   onRangeChange: (range: StatsTimeRange) => void;
 }) {
   const [openFilterId, setOpenFilterId] = useState<string | null>(null);
+  const [rangeMenuAnchor, setRangeMenuAnchor] =
+    useState<RangeMenuAnchor | null>(null);
   const filterProps: InsightFilterProps = {
     onChangeRange: (range) => {
       onRangeChange(range);
       setOpenFilterId(null);
+      setRangeMenuAnchor(null);
     },
-    onToggleFilter: (filterId) => {
-      setOpenFilterId((currentFilterId) =>
-        currentFilterId === filterId ? null : filterId,
-      );
+    onToggleFilter: (filterId, anchor) => {
+      setOpenFilterId((currentFilterId) => {
+        if (currentFilterId === filterId) {
+          setRangeMenuAnchor(null);
+          return null;
+        }
+
+        setRangeMenuAnchor(anchor ?? null);
+        return filterId;
+      });
     },
     openFilterId,
     selectedRange,
   };
+  const rangeOverlay = (
+    <RangeMenuOverlay
+      anchor={rangeMenuAnchor}
+      onChangeRange={filterProps.onChangeRange}
+      onClose={() => {
+        setOpenFilterId(null);
+        setRangeMenuAnchor(null);
+      }}
+      selectedRange={selectedRange}
+      visible={openFilterId !== null && rangeMenuAnchor !== null}
+    />
+  );
 
   if (activeTab === "triggers") {
     return (
-      <View className="gap-[16px]">
-        <RankingCard
-          caption={stats.insightRangeLabel}
-          emptyLabel="No triggers logged for this range."
-          filterId="triggers-ranking"
-          items={stats.triggerRanking}
-          {...filterProps}
-          title="Most Common Triggers"
-        />
-      </View>
+      <>
+        <View className="gap-[16px]">
+          <RankingCard
+            caption={stats.insightRangeLabel}
+            emptyLabel="No triggers logged for this range."
+            filterId="triggers-ranking"
+            items={stats.triggerRanking}
+            {...filterProps}
+            title="Most Common Triggers"
+          />
+        </View>
+        {rangeOverlay}
+      </>
     );
   }
 
   if (activeTab === "symptoms") {
     return (
-      <View className="gap-[16px]">
-        <RankingCard
-          caption={stats.insightRangeLabel}
-          emptyLabel="No symptoms logged for this range."
-          filterId="symptoms-ranking"
-          items={stats.symptomRanking}
-          {...filterProps}
-          title="Most Common Symptoms"
-        />
-      </View>
+      <>
+        <View className="gap-[16px]">
+          <RankingCard
+            caption={stats.insightRangeLabel}
+            emptyLabel="No symptoms logged for this range."
+            filterId="symptoms-ranking"
+            items={stats.symptomRanking}
+            {...filterProps}
+            title="Most Common Symptoms"
+          />
+        </View>
+        {rangeOverlay}
+      </>
     );
   }
 
   if (activeTab === "medications") {
     return (
-      <View className="gap-[16px]">
-        <RankingCard
-          caption={stats.insightRangeLabel}
-          emptyLabel="No medications logged for this range."
-          filterId="medications-ranking"
-          items={stats.medicationRanking}
-          {...filterProps}
-          title="Most Common Medications"
-        />
-      </View>
+      <>
+        <View className="gap-[16px]">
+          <RankingCard
+            caption={stats.insightRangeLabel}
+            emptyLabel="No medications logged for this range."
+            filterId="medications-ranking"
+            items={stats.medicationRanking}
+            {...filterProps}
+            title="Most Common Medications"
+          />
+        </View>
+        {rangeOverlay}
+      </>
     );
   }
 
-  return <OverviewContent filterProps={filterProps} stats={stats} />;
+  return (
+    <>
+      <OverviewContent filterProps={filterProps} stats={stats} />
+      {rangeOverlay}
+    </>
+  );
 }

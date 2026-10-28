@@ -134,7 +134,7 @@ export default function HomeScreen() {
               {greeting}
             </Text>
             <Text className="font-headly-medium text-[14px] leading-[19px] text-[#111827]">
-              Here's your summary
+              Here&apos;s your summary
             </Text>
           </View>
 

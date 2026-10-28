@@ -23,6 +23,7 @@ export type StatsMetric = {
   helper: string;
   delta: string;
   direction: TrendDirection;
+  showTrend: boolean;
 };
 
 export type StatsRankItem = {
@@ -447,6 +448,7 @@ export function getStatsData(
       ? 0
       : insightEntries.length - previousInsightEntries.length;
   const monthBuckets = getMonthBuckets(entries, insightRange, referenceDate);
+  const showMetricTrend = insightRange !== "allTime";
 
   return {
     averageDuration: {
@@ -454,6 +456,7 @@ export function getStatsData(
       direction: getDirection(durationDelta),
       helper: comparisonHelper,
       label: "Average Duration",
+      showTrend: showMetricTrend,
       value: formatDuration(averageDuration),
     },
     averageIntensity: {
@@ -461,6 +464,7 @@ export function getStatsData(
       direction: getDirection(intensityDelta),
       helper: comparisonHelper,
       label: "Average Intensity",
+      showTrend: showMetricTrend,
       value: `${formatIntensity(averageIntensity)}/10`,
     },
     insightRangeLabel,
@@ -489,6 +493,7 @@ export function getStatsData(
       direction: getDirection(episodeDelta),
       helper: comparisonHelper,
       label: "Total Episodes",
+      showTrend: showMetricTrend,
       value: `${insightEntries.length}`,
     },
     triggerRanking: getRankItems(insightEntries, (entry) => entry.triggers),

@@ -6,6 +6,7 @@ import {
   ScrollView,
   Text,
   type ViewStyle,
+  type ViewInstance,
   View,
 } from "react-native";
 
@@ -53,7 +54,7 @@ type IntensitySliderProps = {
 
 function IntensitySlider({ value, onChange }: IntensitySliderProps) {
   const [trackWidth, setTrackWidth] = useState(0);
-  const trackRef = useRef<View>(null);
+  const trackRef = useRef<ViewInstance>(null);
   const trackMetrics = useRef({ pageX: 0, width: 0 });
 
   const measureTrack = useCallback((layoutWidth?: number) => {

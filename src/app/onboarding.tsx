@@ -132,10 +132,6 @@ export default function OnboardingScreen() {
     );
   }, []);
 
-  const goToPreviousPage = useCallback(() => {
-    setPageIndex((currentIndex) => Math.max(currentIndex - 1, 0));
-  }, []);
-
   const handleSwipeStart = (event: GestureResponderEvent) => {
     const { pageX, pageY } = event.nativeEvent;
     swipeStart.current = { x: pageX, y: pageY, pageIndex };
